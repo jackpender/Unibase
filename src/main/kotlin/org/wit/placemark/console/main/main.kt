@@ -2,6 +2,7 @@ package org.wit.placemark.console.main
 
 import mu.KotlinLogging
 import org.wit.placemark.console.models.CollegeModel
+import org.wit.placemark.console.models.CourseModel
 
 private val logger = KotlinLogging.logger {}
 
@@ -9,8 +10,10 @@ var collegeName : String = ""
 var collegeAddress : String = ""
 
 var college = CollegeModel()
+var course = CourseModel()
 
 val colleges = ArrayList<CollegeModel>()
+//val courses = ArrayList<CourseModel>()
 
 fun main(args: Array<String>){
     logger.info { "Launching UniBase Console App" }
@@ -57,20 +60,46 @@ fun menu() : Int {
 fun addCollege(){
 //    println("You Chose Add College")
 
-    println(" -- Add College -- ")
+    println(" -- Add College -- " +
+            "")
     println()
     print("Enter College Name : ")
     college.name = readLine()!!
     print("Enter College Eircode: ")
     college.address = readLine()!!
+//    college.id++
 //    println("You entered [ ${college.name} ] for College Name and [ ${college.address} ] for College Eircode")
 
     if (college.name.isNotEmpty() && college.address.isNotEmpty()) {
+        college.id = colleges.size.toLong()
         colleges.add(college.copy())
-        logger.info("Placemark Added : [ $college ]")
+        logger.info("College Added : [ $college ]")
     }
     else
-        logger.info("Placemark Not Added")
+        logger.info("College Not Added")
+}
+
+fun addCourse() {
+    println(" -- Add Course -- " + "")
+    println()
+    listColleges()
+    print("Enter College Name : ")
+    var clge: Long = readLine()!!.toLong()
+
+    print("Enter Course Name: ")
+    course.name = readLine()!!
+    print("Enter Course Description: ")
+    course.description = readLine()!!
+    print("Enter Number of Years: ")
+    course.years = readLine()!!.toInt()
+    if (course.name.isNotEmpty() && course.description.isNotEmpty()) {
+        do{
+            print(colleges.get(clge.toInt()))
+            colleges.get(clge.toInt()).courses.add(course.copy())
+        }while(college.id == clge)
+        logger.info("Course Added to ${college.name}: [ ${course.name} ]")
+    } else
+        logger.info("Course Not Added")
 }
 
 fun updateCollege() {
@@ -91,14 +120,8 @@ fun listColleges() {
     val sortedColleges = colleges.sortedBy { it.name }
     sortedColleges.forEach { logger.info("${it}")}
     for(i in sortedColleges)
-        println("College Name: " + i.name + "\nCollege Address: " + i.address + "\n")
+        println("College Name: " + i.name + "\nCollege Address: " + i.address + "\nCollege ID: " + i.id + "\n" + i.courses + "\n")
 }
-
-
-fun addCourse(){
-    println("You Chose Add Course")
-}
-
 
 fun addModule(){
     println("You Chose Add Module")
